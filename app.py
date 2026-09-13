@@ -212,21 +212,34 @@ div[data-baseweb="select"] > div {
 # =========================================================
 # OLLAMA
 # =========================================================
+def ask_ollama(messages, fast=False):
+    try:
+        response = requests.post(
+            f"{BACKEND_URL}/chat",
+            json={
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": SYSTEM_PROMPT
+                    }
+                ] + messages,
+                "fast": fast
+            },
+            timeout=120
+        )
 
-def ask_ollama(messages):
-    response = requests.post(
-        OLLAMA_URL,
-        json={
-            "model": MODEL,
-            "messages": messages,
-            "stream": False,
-            "options": {"num_predict": 400}
-        },
-        timeout=300
-    )
-    response.raise_for_status()
-    return response.json()["message"]["content"]
+        if response.status_code != 200:
+            return f"Backend error: {response.text}"
 
+        data = response.json()
+
+        if "error" in data:
+            return f"Backend error: {data['error']}"
+
+        return data.get("response", "No response received.")
+
+    except requests.exceptions.RequestException as error:
+        return f"Bizly couldn't connect to online backend: {error}"
 
 # =========================================================
 # QUOTATION PDF
