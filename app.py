@@ -8,8 +8,7 @@ from reportlab.lib.enums import TA_CENTER
 from io import BytesIO
 from datetime import datetime
 
-OLLAMA_URL = "http://localhost:11434/api/chat"
-MODEL = "llama3.2:latest"
+BACKEND_URL = "https://bizly-backend.onrender.com"
 
 SYSTEM_PROMPT = """
 You are Bizly, a fast and practical AI business assistant.
